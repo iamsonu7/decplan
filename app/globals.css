@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Journey HQ look: cream background, pastel blocks, charcoal outlines, hard offset shadows. */
+@theme {
+  --color-cream: #fbf6ea;
+  --color-paper: #fffdf7;
+  --color-ink: #2b2b2b;
+  --color-muted: #6b6860;
+  --color-sky: #cfe3f7;
+  --color-mint: #cdeedd;
+  --color-peach: #fbdcc8;
+  --color-lilac: #e1d7f6;
+  --color-butter: #fbeeb5;
+  --font-sans: ui-rounded, "Nunito", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+@layer components {
+  .card {
+    background: var(--color-paper);
+    border: 1.5px solid var(--color-ink);
+    border-radius: 14px;
+    box-shadow: 3px 3px 0 var(--color-ink);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    font-weight: 700;
+    background: var(--color-sky);
+    border: 1.5px solid var(--color-ink);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--color-ink);
+    cursor: pointer;
+  }
+  .btn:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--color-ink);
+  }
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--color-lilac);
+    outline-offset: 2px;
+  }
+  .pill {
+    display: inline-block;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+  }
+}
