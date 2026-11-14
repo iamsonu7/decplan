@@ -1,4 +1,5 @@
 import { requireUser, signOut } from "@/auth";
+import { CaptureBox, CaptureButton } from "@/components/CaptureBox";
 import { Nav } from "@/components/Nav";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -16,6 +17,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <form action="/search" className="hidden md:block">
           <input type="search" name="q" placeholder="Search everything…" aria-label="Search everything" className="w-full rounded-lg border-[1.5px] border-ink bg-paper px-3 py-1.5" />
         </form>
+        <CaptureButton className="btn w-full justify-between bg-mint py-2">
+          <span>Capture</span>
+          <kbd className="hidden text-sm font-semibold md:inline">Ctrl K</kbd>
+        </CaptureButton>
         <Nav />
         <form
           className="mt-auto hidden md:block"
@@ -33,6 +38,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </form>
       </aside>
       <main className="min-w-0 flex-1 p-5 md:p-10">{children}</main>
+      <CaptureBox />
     </div>
   );
 }

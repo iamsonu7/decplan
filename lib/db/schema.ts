@@ -38,6 +38,16 @@ export * from "./schema-values";
 // A pointer to a row in any table, e.g. { table: "tasks", id: "..." }
 export type ItemRef = { table: string; id: string };
 
+// One thing the capture bot filed, with enough detail to undo it or file it again as another type.
+export type FiledRef = ItemRef & {
+  type: string; // task, reminder, contact, ...
+  label: string;
+  action: "created" | "updated";
+  previous?: { status: string; notes: string | null }; // old values, when an outreach row was updated
+  source: Record<string, unknown>; // the item as the bot produced it
+  undone?: boolean;
+};
+
 // ---- Google connection (one row: only ALLOWED_EMAIL can sign in) ----
 export const googleTokens = pgTable("google_tokens", {
   email: text("email").primaryKey(),
@@ -170,7 +180,7 @@ export const captures = pgTable("captures", {
   ...base,
   rawText: text("raw_text").notNull(),
   reply: text("reply"),
-  createdItems: jsonb("created_items").$type<ItemRef[]>().notNull().default([]),
+  createdItems: jsonb("created_items").$type<FiledRef[]>().notNull().default([]),
 });
 
 export const inboxItems = pgTable("inbox_items", {

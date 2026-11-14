@@ -13,6 +13,7 @@ export const DB_TABLES = {
   learning: s.learningLog,
   notes: s.notes,
   opportunities: s.opportunities,
+  inbox: s.inboxItems,
   planItems: s.planItems,
 } satisfies Record<TableKey, PgTable>;
 

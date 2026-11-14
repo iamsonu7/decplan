@@ -5,6 +5,9 @@ import { db } from "@/lib/db";
 import { GOOGLE_SCOPES, missingScopes } from "@/lib/google/scopes";
 import { getConnection, getGoogleAccessToken } from "@/lib/google/token";
 import { TABLE_CONFIG } from "@/lib/tables/config";
+import { monthlyUsage } from "@/app/capture-actions";
+import { DEFAULT_ANTHROPIC_MODEL, providerName } from "@/lib/ai";
+import { listGeminiFlashModels } from "@/lib/ai/gemini";
 
 async function checks(email: string) {
   let tables = 0;
@@ -40,6 +43,71 @@ function Status({ ok, title, detail }: { ok: boolean; title: string; detail: str
         <p className="text-muted">{detail}</p>
       </div>
     </div>
+  );
+}
+
+async function AiSection() {
+  const provider = providerName();
+  const usage = await monthlyUsage();
+  const usdInr = Number(process.env.USD_INR) || 90;
+  const totalUsd = usage.reduce((sum, u) => sum + u.costUsd, 0);
+
+  let ok = true;
+  let detail = "";
+  let flashModels: string[] = [];
+  if (provider === "anthropic") {
+    ok = Boolean(process.env.ANTHROPIC_API_KEY);
+    detail = ok ? `Anthropic, model ${process.env.ANTHROPIC_MODEL || DEFAULT_ANTHROPIC_MODEL}` : "ANTHROPIC_API_KEY is not set. See SETUP.md, Part I.";
+  } else if (provider === "fake") {
+    detail = "Test stand-in (AI_PROVIDER=fake). It only matches keywords. Set a real provider for actual use.";
+  } else {
+    const key = process.env.GEMINI_API_KEY;
+    const model = process.env.GEMINI_MODEL;
+    ok = Boolean(key && model);
+    detail = !key ? "GEMINI_API_KEY is not set. See SETUP.md, Part I." : !model ? "GEMINI_MODEL is not set. Pick one of the models below." : `Google Gemini, model ${model}`;
+    if (key) {
+      try {
+        flashModels = await listGeminiFlashModels(key);
+        if (model && flashModels.length > 0 && !flashModels.includes(model)) {
+          ok = false;
+          detail = `GEMINI_MODEL is "${model}", which your key cannot use. Pick one of the models below.`;
+        }
+      } catch (e) {
+        ok = false;
+        detail = `Could not check the Gemini key: ${e instanceof Error ? e.message : "unknown error"}`;
+      }
+    }
+  }
+
+  return (
+    <section className="card mt-6 p-5">
+      <h2 className="text-xl font-extrabold">AI provider</h2>
+      <div className="mt-2">
+        <Status ok={ok} title={provider === "anthropic" ? "Anthropic" : provider === "fake" ? "Test stand-in" : "Google Gemini"} detail={detail} />
+      </div>
+      {flashModels.length > 0 && (
+        <p className="text-sm text-muted">
+          Flash models your key can use: {flashModels.slice(0, 12).join(", ")}. Check which are free on Google&apos;s pricing page, then put the name in GEMINI_MODEL.
+        </p>
+      )}
+      <h3 className="mt-4 font-bold">This month</h3>
+      {usage.length === 0 ? (
+        <p className="text-muted">No AI use yet this month.</p>
+      ) : (
+        <ul className="mt-1 grid gap-1">
+          {usage.map((u) => (
+            <li key={u.provider}>
+              <span className="font-semibold">{u.provider}:</span> {u.calls} message(s), {(u.inputTokens + u.outputTokens).toLocaleString("en-IN")} tokens ({u.inputTokens.toLocaleString("en-IN")} in,{" "}
+              {u.outputTokens.toLocaleString("en-IN")} out), about ${u.costUsd.toFixed(4)}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="mt-2 font-semibold">
+        Estimated cost this month: ${totalUsd.toFixed(4)} (about ₹{(totalUsd * usdInr).toFixed(2)} at ₹{usdInr} per dollar)
+      </p>
+      <p className="mt-1 text-sm text-muted">Gemini is counted as free because the app is meant to use Google&apos;s free tier. If you turn on billing in Google AI Studio, Google charges its own rates.</p>
+    </section>
   );
 }
 
@@ -111,13 +179,10 @@ export default async function SettingsPage() {
             </ul>
           </div>
         </div>
-        <p className="mt-3 text-sm text-muted">The bot and the Google features arrive in the next build steps. These rules are fixed in the code.</p>
+        <p className="mt-3 text-sm text-muted">The Google features arrive in the next build steps. These rules are fixed in the code.</p>
       </section>
 
-      <section className="card mt-6 p-5">
-        <h2 className="text-xl font-extrabold">AI provider</h2>
-        <p className="mt-2 text-muted">Set up in build step 3, with the capture bot. The monthly token and cost estimate will show here.</p>
-      </section>
+      <AiSection />
 
       <section className="card mt-6 p-5">
         <h2 className="text-xl font-extrabold">Export your data</h2>

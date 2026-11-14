@@ -13,11 +13,13 @@ const ICONS: Record<string, string> = {
   opportunities: "M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z",
   deliverables: "M4 8l8-4 8 4-8 4zM4 8v8l8 4 8-4V8M12 12v8",
   learning: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 21V5M8 7h7",
+  inbox: "M4 13l3-8h10l3 8v6H4zM4 13h5a3 3 0 006 0h5",
   settings: "M4 7h10M18 7h2M4 17h2M10 17h10M16 5v4M8 15v4",
 };
 
 export const NAV = [
   { href: "/", label: "Today", icon: "today" },
+  { href: "/inbox", label: "Inbox", icon: "inbox" },
   { href: "/plan", label: "Plan", icon: "plan" },
   { href: "/tasks", label: "Tasks", icon: "tasks" },
   { href: "/outreach", label: "Outreach", icon: "outreach" },

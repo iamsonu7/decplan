@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { and, asc, eq, isNull, lt, lte, ne } from "drizzle-orm";
 import { requireUser } from "@/auth";
+import { CaptureButton } from "@/components/CaptureBox";
 import { PlanTick, QuickLog, QuickTask, TaskTick } from "@/components/TodayWidgets";
 import { db } from "@/lib/db";
 import { learningLog, planItems, tasks } from "@/lib/db/schema";
@@ -32,6 +33,11 @@ export default async function TodayPage() {
     <div className="max-w-4xl">
       <h1 className="text-4xl font-extrabold">Today</h1>
       <p className="mt-2 text-muted">{formatDay(today)}</p>
+
+      <CaptureButton className="card mt-6 flex w-full items-center justify-between gap-3 bg-paper px-5 py-4 text-left hover:translate-x-px hover:translate-y-px">
+        <span className="text-lg text-muted">What happened? Type it here in any words…</span>
+        <kbd className="pill hidden bg-mint sm:inline-block">Ctrl K</kbd>
+      </CaptureButton>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s) => (

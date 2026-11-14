@@ -337,9 +337,69 @@ You only do this once. If the button is not there, the plan is already loaded.
 
 ---
 
-## Part I. AI key (not needed yet)
+## Part I. AI key for the capture bot
 
-This is added when the capture bot is built. I will extend this guide then.
+The capture bot needs an AI model. The default is Google Gemini on its free tier.
+
+### I1. Get a Gemini key
+
+1. Go to https://aistudio.google.com/apikey and sign in with your Google account.
+2. Click **Create API key**. If it asks for a project, choose your Journey HQ project (or let it create a new one).
+3. Copy the key. It is a long line of letters and numbers.
+4. In `.env.local`, add these lines at the bottom (they are also in `.env.example`):
+
+```
+AI_PROVIDER=gemini
+GEMINI_API_KEY=paste-your-key-here
+GEMINI_MODEL=
+```
+
+Do **not** set up billing in AI Studio. Without billing you stay on the free tier, which has a daily limit that is far more than this app needs. On the free tier Google may use what you send to improve its products.
+
+### I2. Choose the model
+
+Google renames its models often, so you pick the current one yourself:
+
+1. Open https://ai.google.dev/gemini-api/docs/pricing
+2. Find the newest **Flash** model whose free tier says **Free of charge** (not "Not available"). Avoid ones marked "preview" if a stable one is free.
+3. Copy its model code. It looks like `gemini-<version>-flash`.
+4. Put it after `GEMINI_MODEL=` in `.env.local`.
+
+To double-check, restart the app (`Ctrl+C`, then `npm run dev`) and open **Settings**. The **AI provider** card lists the Flash models your key can use and says **OK** when the key and model both work.
+
+### I3. Add the same settings to Vercel
+
+1. Vercel > your project > **Settings** > **Environment Variables**.
+2. Add `AI_PROVIDER`, `GEMINI_API_KEY` and `GEMINI_MODEL` with the same values.
+3. **Deployments** > three dots on the top row > **Redeploy**.
+
+### I4. Try it
+
+Press `Ctrl+K` on any page (or `/`), type `did 2 hours on balance sheet today. need to finish cash flow section tomorrow` and press Enter. You should get two cards: a progress log and a task.
+
+### Optional: use Anthropic instead
+
+This costs money (a small amount: the estimate is on the Settings page).
+
+1. Create a key at https://console.anthropic.com and add credit.
+2. In `.env.local` and in Vercel set:
+
+```
+AI_PROVIDER=anthropic
+ANTHROPIC_API_KEY=paste-your-key-here
+```
+
+The model defaults to `claude-haiku-5-5`. To switch back, set `AI_PROVIDER=gemini`.
+
+### Test the bot's understanding
+
+With a key in `.env.local`, this sends 24 example messages (including typos and Hinglish) to the AI and checks how each is filed:
+
+```bash
+npm run test:ai
+```
+
+It uses about 24 AI requests each time you run it.
 
 ---
 
@@ -357,6 +417,8 @@ This is added when the capture bot is built. I will extend this guide then.
 | Today page: "Connected, but no tables" | The tables were not created | Run `npm run db:migrate` |
 | Today page: Google permissions says "Missing: ..." | You left a box unticked on Google's screen | Click **Sign out**, sign in again and tick every box |
 | "Google refused to refresh access (invalid_grant)" | Google ended the app's access | Sign out and sign in again. If it happens every week, do Part G |
+| Capture says "GEMINI_MODEL is not set" or "does not know the model" | The model name is missing or wrong | Do I2, then restart the app |
+| Capture says "The AI is busy right now (rate limit)" | You hit the free tier's per-minute or daily limit | Wait a minute and try again |
 | You changed `.env.local` and nothing happened | The app reads the file only when it starts | Stop it with `Ctrl+C` and run `npm run dev` again |
 
 If you get stuck, copy the exact error text (never your `.env.local`) and send it to me.

@@ -126,6 +126,16 @@ export const TABLE_CONFIG = {
       { key: "status", label: "Status", type: "select", options: OPPORTUNITY_STATUSES },
     ],
   },
+  inbox: {
+    label: "Inbox",
+    singular: "inbox item",
+    page: false,
+    href: "/inbox",
+    columns: [
+      { key: "rawText", label: "What you wrote", type: "text", required: true },
+      { key: "question", label: "Question", type: "text" },
+    ],
+  },
   planItems: {
     label: "Plan items",
     singular: "plan item",
