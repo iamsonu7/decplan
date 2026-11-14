@@ -328,7 +328,16 @@ Google may show a message about verification. You can ignore it and do not need 
 
 ---
 
-## Part H. AI key (not needed yet)
+## Part H. Load the December plan
+
+1. Open the app and click **Plan** in the sidebar.
+2. Click **Load the December plan**. This adds the four blocks, the "running alongside" items and the three deliverables.
+
+You only do this once. If the button is not there, the plan is already loaded.
+
+---
+
+## Part I. AI key (not needed yet)
 
 This is added when the capture bot is built. I will extend this guide then.
 

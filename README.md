@@ -12,6 +12,7 @@ Setup is in [SETUP.md](SETUP.md).
 | `npm run test` | Run the tests |
 | `npm run db:generate` | Create a migration after editing `lib/db/schema.ts` |
 | `npm run db:migrate` | Apply migrations to the database in `DATABASE_URL` |
+| `npm run db:seed` | Load the December plan (same as the button on the Plan page) |
 
 ## Where things live
 
@@ -22,12 +23,14 @@ Setup is in [SETUP.md](SETUP.md).
 | Google scopes | `lib/google/scopes.ts` |
 | Encrypted Google token storage and refresh | `lib/google/token.ts`, `lib/crypto.ts` |
 | Pages | `app/(app)/` |
+| Columns of each table page (Tasks, Outreach, Contacts and so on) | `lib/tables/config.ts` |
+| The December plan seed data | `lib/seed-plan.ts` |
 | Colours and card styles | `app/globals.css` |
 
 ## Build status
 
 1. Auth and database: done
-2. Pages with seed data
+2. Pages with seed data: done
 3. Capture bot
 4. Calendar and Tasks
 5. Gmail

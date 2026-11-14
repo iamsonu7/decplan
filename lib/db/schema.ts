@@ -24,20 +24,16 @@ const base = {
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
 };
 
-// ---- Allowed values (kept as plain text in the database, typed here) ----
-export const TASK_STATUSES = ["todo", "doing", "done"] as const;
-export const OUTREACH_TYPES = ["boutique bank", "CA firm", "fund", "alumni"] as const;
-export const OUTREACH_STATUSES = ["to send", "sent", "replied", "call booked", "dead"] as const;
-export const CONTACT_KINDS = ["owner", "alumni", "banker", "CA", "other"] as const;
-export const OPPORTUNITY_STATUSES = ["open", "pursuing", "dropped"] as const;
-export const DELIVERABLE_STATUSES = ["not started", "in progress", "done"] as const;
-
-export type TaskStatus = (typeof TASK_STATUSES)[number];
-export type OutreachType = (typeof OUTREACH_TYPES)[number];
-export type OutreachStatus = (typeof OUTREACH_STATUSES)[number];
-export type ContactKind = (typeof CONTACT_KINDS)[number];
-export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
-export type DeliverableStatus = (typeof DELIVERABLE_STATUSES)[number];
+// ---- Allowed values (kept as plain text in the database, typed in schema-values.ts) ----
+import type {
+  ContactKind,
+  DeliverableStatus,
+  OpportunityStatus,
+  OutreachStatus,
+  OutreachType,
+  TaskStatus,
+} from "./schema-values";
+export * from "./schema-values";
 
 // A pointer to a row in any table, e.g. { table: "tasks", id: "..." }
 export type ItemRef = { table: string; id: string };
